@@ -236,23 +236,23 @@ class TaskSet:
             return total_score
 
 def get_data_json(version):
-    if version in ['latest', 'arcagi2']:
-        return json.load(open(f"{os.path.dirname(__file__)}/data/arcagi2.json"))
+    version_map = {
+        ('latest', 'arcagi2'): 'arcagi2.json',
+        ('arcagi', 'aa922be'): 'arcagi_aa922be.json',
+        ('kaggle', 'kaggle2025'): 'kaggle2025.json',
+        ('kaggle2024',): 'kaggle2024.json',
+        ('arc', 'kaggle2019'): 'arc1.json',
+    }
 
-    elif version in ['arcagi', 'aa922be']:
-        return json.load(open(f"{os.path.dirname(__file__)}/data/arcagi_aa922be.json"))
-    
-    elif version in ['kaggle', 'kaggle2025']:
-        return json.load(open(f"{os.path.dirname(__file__)}/data/kaggle2025.json"))
+    for keys, filename in version_map.items():
+        if version in keys:
+            filepath = os.path.join(os.path.dirname(__file__), 'data', filename)
+            print("Loading data version:", version, "from file:", filename)
+            with open(filepath) as f:
+                return json.load(f)
 
-    elif version in ['kaggle2024']:
-        return json.load(open(f"{os.path.dirname(__file__)}/data/kaggle2024.json"))
+    raise ValueError(f"Unknown ARC dataset version: {version}")
     
-    elif version in ['arc', 'kaggle2019']:
-        return json.load(open(f"{os.path.dirname(__file__)}/data/arc1.json"))
-    
-    else:
-        raise ValueError(f"Unknown ARC dataset version: {version}")
 
 def load_data(version='latest') -> (TaskSet, TaskSet):
     """
